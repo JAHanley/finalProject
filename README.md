@@ -1,4 +1,4 @@
 # finalProject
 A look at the network inference through physics heuristic 
 
-testing 123
+Warwick Final Project
