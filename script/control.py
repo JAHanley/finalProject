@@ -1,12 +1,13 @@
 from average import average
 from glauberDynamics import glauber
+from BeliefPropagation import BP
 import matplotlib.pyplot as plt
 from metropolisAlgorithm import metropolis
 import graph
 import numpy as np
 import pandas as pd
 
-columns=['n','q','p_in','p_out','Glauber','Glauber_STD','Metropolis','Metropolis_STD','Average','Average_STD']
+columns=['n','q','p_in','p_out','Belief Propagation','Belief Propagation_STD','Glauber','Glauber_STD','Metropolis','Metropolis_STD','Average','Average_STD']
 
 def xsFormula(p_in,p_out):
     return p_in/(p_out)
@@ -32,8 +33,8 @@ def start(saveLoc = 'data.csv'):
 
 def run(p_out,q,n, samples = 100, iterations = 10, saveLoc = 'data.csv'):
     c_out= n* p_out
-    functions = [glauber, metropolis,average]
-    function_names =['Glauber','Metropolis','Average']
+    functions = [BP,glauber, metropolis,average]
+    function_names =['Belief Propagation','Glauber','Metropolis','Average']
     ys = np.zeros((len(functions),samples))
     ys_std = np.zeros((len(functions),samples))
     #glauber_ys = np.zeros(samples)
