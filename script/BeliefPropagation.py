@@ -11,16 +11,13 @@ def BP(g:graph.SBM):
             for k in range(g.q):
                 marginals_msg[i][j][k]= rnd.random()
             marginals_msg[i][j]=normalise(marginals_msg[i][j])
-    priors = np.ones(g.q)
+    priors = generate_priors(g)
 
 
-    for i in range(g.n):
-        priors = generate_priors(g,marginals_msg,priors)
-        print(priors)
+    for i in range(g.n*0+1):
         v = rnd.randint(0,g.n-1)
         marginals_msg = run(g,marginals_msg,v,priors)
 
-    priors = generate_priors(g,marginals_msg,priors)
     marginals = finalMarginal(marginals_msg,g,priors)
     grouping = extractGroups(marginals)
 
@@ -34,7 +31,7 @@ def run(g:graph.SBM, msg,v,priors):
                 if(v!= j):
                     sum = 0
                     for k in range(g.q):
-                        sum+=msg[j][u][k] * priors[k]
+                        sum+=msg[j][u][k] * priors[r][k]
                     product *= sum
             msg[u][v][r] = product
         msg[u][v] = normalise(msg[u][v])
@@ -43,21 +40,18 @@ def run(g:graph.SBM, msg,v,priors):
 
 def finalMarginal(msg,g:graph.SBM,priors):
     marginals = np.zeros((g.n,g.q))
-    for i,v in enumerate(msg):
-        
-        for r in range(g.q):
+    for v in range(g.n):
+        for j in range(g.q):
+
             product = 1
-            for j in g.g.neighbors(i):
-                u = v[j]
-                print("-<>-",u)
+            for u in g.g.neighbors(v):
                 sum=0
-                for i,k in enumerate(u):
-                    sum+= k * priors[i]
+                for k in range(g.q):
+                    sum+= msg[u][v][k]*priors[k][j]
                 product *= sum
-            marginals[i][r] = product
-            print("----> ",marginals[i][r])
-        
-        marginals[i] = normalise(marginals[i])
+            marginals[v][j] = product
+
+        marginals[v] = normalise(marginals[v])
     return marginals
 
 
@@ -69,23 +63,18 @@ def extractGroups(msg):
     
     return groups
 
-def generate_priors(g,msg,priors):
-    print('Prior', priors)
-    marginals = finalMarginal(msg,g,priors)
-    print('--------------------------------')
-    grouping = extractGroups(marginals)
-    print(grouping)
-    group_count = np.zeros(g.q)
-    for i in range(g.n):
-        group_count[int(grouping[i])] += 1
-    
-    return np.power(np.e,-group_count/(g.n/g.q))
+def generate_priors(g):
+    priors = np.zeros((g.q,g.q))
+    for i in range(g.q):
+        for j in range(g.q):
+            priors[i][j] = g.p_in if j==i else g.p_out
+    return priors
 
 def normalise(arr):
     if(not np.any(arr)):
         return np.ones(arr.shape)
 
-    norm = np.linalg.norm(arr)
+    norm = sum(arr)
     if(norm != 0):
         arr = arr/norm
         if(not np.any(arr)):

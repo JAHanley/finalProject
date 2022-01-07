@@ -30,6 +30,8 @@ def start(saveLoc = 'data.csv'):
             print("q=",q," complete")
         print(p_out, ' Completed')
 
+    print('-------------DONE-----------------')
+
 
 def run(p_out,q,n, samples = 100, iterations = 10, saveLoc = 'data.csv'):
     c_out= n* p_out
