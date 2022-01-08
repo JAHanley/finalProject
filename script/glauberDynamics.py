@@ -5,7 +5,7 @@ import random as rnd
 def glauber(g):
     grouping = setupGlauber(g)
 
-    for i in range(g.n):
+    for i in range(g.q*g.n):
         rnd_point = rnd.randint(0,g.n-1)
         grouping = glauberSwap(g,grouping,rnd_point)
 

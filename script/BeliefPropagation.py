@@ -14,7 +14,7 @@ def BP(g:graph.SBM):
     priors = generate_priors(g)
 
 
-    for i in range(g.n*0+1):
+    for i in range(g.n*g.q):
         v = rnd.randint(0,g.n-1)
         marginals_msg = run(g,marginals_msg,v,priors)
 

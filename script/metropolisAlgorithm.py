@@ -5,7 +5,7 @@ import random as rnd
 def metropolis(g):
     grouping = setupMetropolis(g)
 
-    for i in range(g.n**(g.q)):
+    for i in range(g.n*(g.q)):
         rnd_point = rnd.randint(0,g.n-1)
         grouping = metropolisSwap(g,grouping,rnd_point)
 
