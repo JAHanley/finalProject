@@ -10,7 +10,7 @@ import pandas as pd
 columns=['n','q','p_in','p_out']
 functions = [BP,glauber, metropolis,average]
 function_names =['Belief Propagation','Glauber','Metropolis','Average']
-iterations = 10
+iterations = 5
 for i in range(iterations):
     columns.append(str(i+1))
 
@@ -20,8 +20,12 @@ def xsFormula(p_in,p_out):
 def inverseXsFormula(x,p_out):
     return (x*p_out)
 
-def generatePoints(samples = 1000,n=10000):
-    arr =  np.linspace(0,n,samples)[1:]
+def generatePoints(samples = 200,n=1000):
+    arr =  np.linspace(0,int(n/2),samples)[1:]
+    return [ e/n for e in arr]
+
+def generatePointsA(samples = 100,n=1000):
+    arr =  np.linspace(0,int(n),samples)[1:]
     return [ e/n for e in arr]
 
 def start(saveLoc = '_data.csv'):
@@ -34,7 +38,7 @@ def start(saveLoc = '_data.csv'):
 
     for p_out in points:
         for q in [2,3,4,5]:
-            run(p_out,q,q*20,1000,saveLoc=saveLoc)
+            run(p_out,q,q*15,100,saveLoc=saveLoc)
             print("q=",q," complete")
         print(p_out, ' Completed')
 
@@ -53,7 +57,7 @@ def run(p_out,q,n, samples = 100,  saveLoc = '_data.csv'):
     scores= np.zeros(len(functions))
     #glauber_scores = []
     #metropolis_scores = []
-    points = generatePoints(samples+1)
+    points = generatePointsA(samples+1)
 
     new_data = [[] for f in functions]
     for index,p_in in enumerate(points):
