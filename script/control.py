@@ -46,17 +46,9 @@ def start(saveLoc = '_data.csv'):
 
 
 def run(p_out,q,n, samples = 100,  saveLoc = '_data.csv'):
-    c_out= n* p_out
-    
-    
-    ys = np.zeros((len(functions),samples))
-    ys_std = np.zeros((len(functions),samples))
-    #glauber_ys = np.zeros(samples)
-    #metropolis_ys = np.zeros(samples)
+
     xs= np.zeros(samples)
-    scores= np.zeros(len(functions))
-    #glauber_scores = []
-    #metropolis_scores = []
+
     points = generatePointsA(samples+1)
 
     new_data = [[] for f in functions]
@@ -69,7 +61,7 @@ def run(p_out,q,n, samples = 100,  saveLoc = '_data.csv'):
             raw_scores = np.zeros((len(functions),iterations))
             
             save = {'n':n,'q':q,'p_in':p_in,'p_out':p_out}
-            saveList = [save for f in functions]
+            saveList = [save.copy() for f in functions]
             for k in range(iterations):
                 g = graph.SBM(p_in,p_out,q,n)
                 g.generate()
@@ -78,16 +70,9 @@ def run(p_out,q,n, samples = 100,  saveLoc = '_data.csv'):
                     grouping = f(g)
                     score = g.rateModel(grouping)
                     saveList[i][str(k+1)] = score
-                    #raw_scores[i,k] = score
-                    #scores[i] += score
-
+  
             for i,s in enumerate(saveList):
                 new_data[i].append(s)
-            #for i in range(len(functions)):
-            #    ys[i][index] = scores[i] / iterations
-            #    save[str(function_names[i])] = ys[i][index]
-            #    ys_std[i][index] = np.max(raw_scores[i]) - np.min(raw_scores[i])
-            #    save[str(function_names[i]) + '_STD'] = ys_std[i][index]
 
     for i,d in enumerate(new_data):
         data= pd.read_csv(function_names[i]+saveLoc)
