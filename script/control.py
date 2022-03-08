@@ -20,13 +20,13 @@ def xsFormula(p_in,p_out):
 def inverseXsFormula(x,p_out):
     return (x*p_out)
 
-def generatePoints(samples = 200,n=10000):
-    arr =  np.linspace(0,int(n/2),samples)[1:]
-    return [ e/n for e in arr]
-
-def generatePointsA(samples = 100,n=1000):
+def generatePoints(samples = 10,n=100000):
     arr =  np.linspace(0,int(n),samples)[1:]
-    return [ e/n for e in arr]
+    return [ e/(n*100) for e in arr]
+
+def generatePointsA(samples = 10,n=1000):
+    arr =  np.linspace(0,int(n),samples)[1:]
+    return [ e/(n*100) for e in arr]
 
 def start(saveLoc = '_data.csv'):
     print('########START########')
