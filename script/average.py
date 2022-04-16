@@ -16,7 +16,7 @@ def average(g):
 
         if(converged):
             count +=1
-            finished = count>g.n*g.q
+            finished = count>g.n
         else:
             count= 0
     #print("iterations =", iter- g.n)

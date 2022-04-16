@@ -20,49 +20,49 @@ def xsFormula(p_in,p_out):
 def inverseXsFormula(x,p_out):
     return (x*p_out)
 
-def generatePoints(samples = 10,n=100000):
+def generatePoints(samples = 100,n=1000):
     arr =  np.linspace(0,int(n),samples)[1:]
-    return [ e/(n*100) for e in arr]
+    return [ e/(n) for e in arr]
 
-def generatePointsA(samples = 10,n=1000):
+def generatePointsA(samples = 100,n=1000):
     arr =  np.linspace(0,int(n),samples)[1:]
-    return [ e/(n*100) for e in arr]
+    return [ e/(n) for e in arr]
 
 def start(saveLoc = '_data.csv'):
     print('########START########')
-    #data = []
-    #for i,f in enumerate(function_names):
-    #    data.append(pd.DataFrame(columns=columns))
-     #   data[i].to_csv(f+saveLoc,index=False)
-    points = generatePoints()
+    #setupFiles(saveLoc)
 
+    points = generatePoints()
+    points.reverse()
+    print(points)
     for p_out in points:
         for q in [2,3,4,5]:
-            run(p_out,q,q*15,100,saveLoc=saveLoc)
+            run(p_out,q,q*100,10,saveLoc=saveLoc)
             print("q=",q," complete")
         print(p_out, ' Completed')
 
     print('-------------DONE-----------------')
 
+def setupFiles(saveLoc):
+    data = []
+    for i,f in enumerate(function_names):
+        data.append(pd.DataFrame(columns=columns))
+        data[i].to_csv(f+saveLoc,index=False)
 
 def run(p_out,q,n, samples = 100,  saveLoc = '_data.csv'):
 
     xs= np.zeros(samples)
 
     points = generatePointsA(samples+1)
-
     new_data = [[] for f in functions]
     for index,p_in in enumerate(points):
         if(p_in>p_out):
-            c = (p_in*n + n*(q-1)*p_out)/q
             xs[index]=p_in
-            
-            scores = np.zeros(len(functions))
-            raw_scores = np.zeros((len(functions),iterations))
             
             save = {'n':n,'q':q,'p_in':p_in,'p_out':p_out}
             saveList = [save.copy() for f in functions]
             for k in range(iterations):
+                print(index,'.',k)
                 g = graph.SBM(p_in,p_out,q,n)
                 g.generate()
 

@@ -20,22 +20,22 @@ class SBM:
         """
         self.generated = True
         self.node_dict = np.zeros(self.n)
-
-        for i in range(self.n):
-            rand = rnd.randint(0,self.q-1)
-            self.node_dict[i] = rand
-        inner_connects = 0
-        outer_connects = 0
-        self.g = nx.Graph()
-        self.g.add_nodes_from(range(self.n))
-        for i in range(self.n):
-            for j in range(i,self.n):
-                if(i!= j and ((self.node_dict[i] == self.node_dict[j] and rnd.random()<self.p_in) or (rnd.random()<self.p_out))):
-                    self.g.add_edge(i,j)
-                    if(self.node_dict[i] == self.node_dict[j]):
-                        inner_connects+=1
-                    else:
-                        outer_connects+=1
+        n=0
+        while(True):
+            n+=1
+            for i in range(self.n):
+                rand = rnd.randint(0,self.q-1)
+                self.node_dict[i] = rand
+            self.g = nx.Graph()
+            self.g.add_nodes_from(range(self.n))
+            for i in range(self.n):
+                for j in range(i,self.n):
+                    if(i!= j and ((self.node_dict[i] == self.node_dict[j] and rnd.random()<self.p_in) or (rnd.random()<self.p_out))):
+                        self.g.add_edge(i,j)
+            if(nx.is_connected(self.g)):
+                return
+            if(n>1000):
+                print(n)
         
 
     def displayGroup(self,grouping):
