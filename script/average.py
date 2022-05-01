@@ -22,6 +22,26 @@ def average(g):
     #print("iterations =", iter- g.n)
     return grouping
 
+def averageCount(g):
+    grouping = setupAverage(g)
+    print('Count')
+
+    count = 0
+    finished = 0
+    iter = 0
+    while(not finished):
+        iter+=1
+        rnd_point = rnd.randint(0,g.n-1)
+        grouping,converged = averageSwap(g,grouping,rnd_point)
+
+        if(converged):
+            count +=1
+            finished = count>g.n
+        else:
+            count= 0
+    #print("iterations =", iter- g.n)
+    return iter
+
 def setupAverage(g:graph.SBM):
     group_dict = dict()
     for v in range(g.n):

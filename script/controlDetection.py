@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 
 columns=['n','q','p_in','p_out']
-functions = [BP,glauber, metropolis,average]
-function_names =['Belief Propagation','Glauber','Metropolis','Average']
+functions = [glauber,metropolis]
+function_names =['Det/Glauber','Det/Metropolis']
 iterations = 5
 for i in range(iterations):
     columns.append(str(i+1))
@@ -20,12 +20,12 @@ def xsFormula(p_in,p_out):
 def inverseXsFormula(x,p_out):
     return (x*p_out)
 
-def generatePoints(samples = 21,n=1000):
-    arr =  np.linspace(0,int(n/4),samples)[1:]
+def generatePoints(samples = 51,n=1000):
+    arr =  np.linspace(0,int(n),samples)[1:]
     return [ e/(n) for e in arr]
 
-def generatePointsA(samples = 100,n=1000):
-    arr =  np.linspace(0,int(n),samples)[1:]
+def generatePointsA(samples = 50,n=1000):
+    arr =  np.linspace(0,int(n/2),samples)[1:]
     return [ e/(n) for e in arr]
 
 def start(saveLoc = '_data.csv'):
@@ -36,8 +36,8 @@ def start(saveLoc = '_data.csv'):
     points
     print(points)
     for p_out in points:
-        for q in [5,4,3,2]:
-            run(p_out,q,q*100,10 ,saveLoc=saveLoc)
+        for q in [5,2]:
+            run(p_out,q,500,10 ,saveLoc=saveLoc)
             print("q=",q," complete")
         print(p_out, ' Completed')
 
@@ -46,7 +46,7 @@ def start(saveLoc = '_data.csv'):
 def covered(p_in,p_out,q,saveLoc):
     df = pd.read_csv(function_names[-1] + saveLoc)
     flag = ((df['p_in'] == p_in) & (df['p_out'] == p_out) & (df['q'] == q)).any()
-    print(q,' ', p_in, ' ', p_out)
+    #print(q,' ', p_in, ' ', p_out)
     if flag: print(' covered')
     return flag
 
@@ -63,19 +63,22 @@ def run(p_out,q,n, samples = 100,  saveLoc = '_data.csv'):
     points = generatePoints()
     new_data = [[] for f in functions]
     for index,p_in in enumerate(points):
+        print(index)
         if(p_in>p_out and (not covered(p_in,p_out,q,saveLoc))):
             #xs[index]=p_in
             
             save = {'n':n,'q':q,'p_in':p_in,'p_out':p_out}
             saveList = [save.copy() for f in functions]
             for k in range(iterations):
-                print(index,'.',k)
+                #print(index,'.',k)
                 g = graph.SBM(p_in,p_out,q,n)
                 g.generate()
+                g.set_q(2)
 
                 for i,f in enumerate(functions):
                     grouping = f(g)
-                    score = g.rateModel(grouping)
+                    score = rating(grouping)
+                    #score = g.rateModel(grouping)
                     saveList[i][str(k+1)] = score
   
             for i,s in enumerate(saveList):
@@ -107,5 +110,9 @@ def run(p_out,q,n, samples = 100,  saveLoc = '_data.csv'):
     #    axs[1].plot(xs,ys_std[i],label=function_names[i])
     #plt.legend()
     #plt.show()
+
+def rating(grouping:dict):
+    total = sum(grouping.values()) / len(grouping)
+    return max(total,1-total)
 
 start()

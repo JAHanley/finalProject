@@ -34,9 +34,11 @@ class SBM:
                         self.g.add_edge(i,j)
             if(nx.is_connected(self.g)):
                 return
-            if(n>1000):
+            if(n>10000):
                 print(n)
-        
+    
+    def set_q(self,new_q):
+        self.q = new_q
 
     def displayGroup(self,grouping):
         #ADD COLOURING N SHIT
